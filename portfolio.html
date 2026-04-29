@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rodel I. Ramos — Software & AI Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #1B3A6B;
+    --navy-dark: #0f2347;
+    --navy-light: #2a5298;
+    --green: #2E7D32;
+    --green-light: #43A047;
+    --green-pale: #e8f5e9;
+    --cream: #FAFAF7;
+    --white: #ffffff;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-600: #4b5563;
+    --gray-800: #1f2937;
+    --gold: #C9A84C;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.10);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.14);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-body); background: var(--cream); color: var(--gray-800); line-height: 1.7; overflow-x: hidden; }
+  #root { min-height: 100vh; }
+  ::selection { background: rgba(27,58,107,0.15); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--gray-100); }
+  ::-webkit-scrollbar-thumb { background: var(--navy-light); border-radius: 3px; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes slideRight { from { width:0; } to { width:100%; } }
+  @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+  @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  @keyframes shimmer { 0%{background-position:-200% 0;} 100%{background-position:200% 0;} }
+  @keyframes spin { to {transform:rotate(360deg);} }
+  @keyframes bgMove { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
+
+  .fade-up { animation: fadeUp 0.7s cubic-bezier(0.4,0,0.2,1) both; }
+  .fade-up-1 { animation-delay: 0.1s; }
+  .fade-up-2 { animation-delay: 0.2s; }
+  .fade-up-3 { animation-delay: 0.3s; }
+  .fade-up-4 { animation-delay: 0.4s; }
+  .fade-up-5 { animation-delay: 0.5s; }
+
+  /* NAV */
+  .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 0 2rem; height: 64px; display: flex; align-items: center; justify-content: space-between; transition: var(--transition); }
+  .nav.scrolled { background: rgba(27,58,107,0.97); backdrop-filter: blur(12px); box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+  .nav-logo { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: white; letter-spacing: -0.5px; cursor: pointer; }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
+  .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.3px; transition: var(--transition); cursor: pointer; }
+  .nav-link:hover { color: var(--gold); }
+  .nav-cta { background: var(--gold); color: var(--navy-dark) !important; padding: 8px 18px; border-radius: 6px; font-weight: 600 !important; }
+  .nav-cta:hover { background: #e0b84a !important; color: var(--navy-dark) !important; }
+
+  /* HERO */
+  .hero { min-height: 100vh; background: linear-gradient(135deg, #0f2347 0%, #1B3A6B 40%, #1a4f3f 100%); display: flex; align-items: center; position: relative; overflow: hidden; }
+  .hero-bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 60px 60px; }
+  .hero-orb-1 { position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(46,125,50,0.25) 0%, transparent 70%); border-radius: 50%; animation: float 8s ease-in-out infinite; }
+  .hero-orb-2 { position: absolute; bottom: -80px; left: -80px; width: 380px; height: 380px; background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%); border-radius: 50%; animation: float 10s ease-in-out infinite 2s; }
+  .hero-content { max-width: 1200px; margin: 0 auto; padding: 8rem 2rem 4rem; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4); color: var(--gold); padding: 6px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 1.5rem; animation: fadeUp 0.7s both; }
+  .hero-tag-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: pulse 2s infinite; }
+  .hero-name { font-family: var(--font-display); font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 900; color: white; line-height: 1.05; letter-spacing: -1px; margin-bottom: 0.5rem; animation: fadeUp 0.7s 0.1s both; }
+  .hero-name-accent { color: var(--gold); display: block; }
+  .hero-role { font-size: 1.3rem; color: rgba(255,255,255,0.7); font-weight: 300; margin-bottom: 1.5rem; animation: fadeUp 0.7s 0.2s both; }
+  .hero-role strong { color: #5ce67a; font-weight: 600; }
+  .hero-desc { color: rgba(255,255,255,0.6); font-size: 1rem; line-height: 1.8; max-width: 480px; margin-bottom: 2rem; animation: fadeUp 0.7s 0.3s both; }
+  .hero-meta { display: flex; flex-direction: column; gap: 6px; margin-bottom: 2.5rem; animation: fadeUp 0.7s 0.35s both; }
+  .hero-meta-item { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.65); font-size: 0.875rem; }
+  .hero-meta-icon { font-size: 14px; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.7s 0.4s both; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--navy-dark); padding: 13px 26px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; text-decoration: none; cursor: pointer; border: none; transition: var(--transition); letter-spacing: 0.2px; }
+  .btn-primary:hover { background: #e0b84a; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,168,76,0.35); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: white; padding: 13px 26px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none; cursor: pointer; border: 1.5px solid rgba(255,255,255,0.3); transition: var(--transition); }
+  .btn-secondary:hover { border-color: white; background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+  .hero-right { animation: fadeUp 0.7s 0.2s both; display: flex; flex-direction: column; gap: 1rem; }
+  .hero-stat-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 1.5rem; backdrop-filter: blur(8px); transition: var(--transition); }
+  .hero-stat-card:hover { background: rgba(255,255,255,0.1); transform: translateX(6px); }
+  .hero-stat-num { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; color: var(--gold); line-height: 1; }
+  .hero-stat-label { color: rgba(255,255,255,0.6); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.5px; margin-top: 4px; }
+  .hero-skills-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.5rem; }
+  .hero-skill-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-family: var(--font-mono); font-weight: 500; }
+
+  /* SECTIONS */
+  section { padding: 5rem 2rem; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 3.5rem; }
+  .section-eyebrow { display: inline-block; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--green); background: var(--green-pale); padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+  .section-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900; color: var(--navy); line-height: 1.1; letter-spacing: -0.5px; }
+  .section-title span { color: var(--green); }
+  .section-line { width: 60px; height: 4px; background: linear-gradient(90deg, var(--green), var(--gold)); border-radius: 2px; margin: 1rem auto 0; }
+
+  /* ABOUT */
+  .about { background: white; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .about-text p { color: var(--gray-600); line-height: 1.85; margin-bottom: 1rem; font-size: 1rem; }
+  .about-text p strong { color: var(--navy); font-weight: 600; }
+  .about-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1.5rem; }
+  .about-info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 0.875rem 1rem; }
+  .about-info-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gray-400); margin-bottom: 3px; }
+  .about-info-value { font-size: 0.875rem; color: var(--navy); font-weight: 600; }
+  .skills-container { display: flex; flex-direction: column; gap: 0.875rem; }
+  .skill-item { }
+  .skill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .skill-name { font-size: 0.875rem; font-weight: 600; color: var(--navy); }
+  .skill-pct { font-size: 0.75rem; font-family: var(--font-mono); color: var(--green); font-weight: 500; }
+  .skill-bar-bg { background: var(--gray-100); border-radius: 4px; height: 7px; overflow: hidden; }
+  .skill-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--navy), var(--green)); transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
+
+  /* PROJECTS */
+  .projects { background: var(--cream); }
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+  .project-card { background: white; border-radius: var(--radius); border: 1px solid var(--gray-200); overflow: hidden; transition: var(--transition); cursor: pointer; }
+  .project-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-6px); border-color: var(--navy); }
+  .project-card-header { padding: 1.5rem 1.5rem 0; display: flex; justify-content: space-between; align-items: flex-start; }
+  .project-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .project-badge { font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
+  .badge-ongoing { background: rgba(46,125,50,0.12); color: var(--green); }
+  .badge-complete { background: rgba(27,58,107,0.1); color: var(--navy); }
+  .project-body { padding: 1.2rem 1.5rem 1.5rem; }
+  .project-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--navy); margin-bottom: 0.4rem; line-height: 1.3; }
+  .project-tech { font-family: var(--font-mono); font-size: 0.7rem; color: var(--green); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+  .project-desc { font-size: 0.875rem; color: var(--gray-600); line-height: 1.7; }
+  .project-points { list-style: none; margin-top: 0.75rem; display: flex; flex-direction: column; gap: 5px; }
+  .project-points li { font-size: 0.8rem; color: var(--gray-600); padding-left: 1.2rem; position: relative; line-height: 1.5; }
+  .project-points li::before { content: '▸'; position: absolute; left: 0; color: var(--green); font-size: 0.65rem; top: 3px; }
+
+  /* EXPERIENCE */
+  .experience { background: white; }
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--navy), var(--green)); }
+  .timeline-item { position: relative; margin-bottom: 2.5rem; }
+  .timeline-dot { position: absolute; left: -2rem; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--navy); border: 3px solid white; box-shadow: 0 0 0 2px var(--navy); transition: var(--transition); }
+  .timeline-item:hover .timeline-dot { background: var(--green); box-shadow: 0 0 0 2px var(--green); transform: scale(1.2); }
+  .timeline-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem; }
+  .timeline-role { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--navy); }
+  .timeline-company { color: var(--green); font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; }
+  .timeline-date { font-family: var(--font-mono); font-size: 0.75rem; color: var(--gray-400); background: var(--gray-100); padding: 4px 10px; border-radius: 20px; white-space: nowrap; font-weight: 500; }
+  .timeline-points { list-style: none; margin-top: 0.75rem; display: flex; flex-direction: column; gap: 6px; }
+  .timeline-points li { font-size: 0.875rem; color: var(--gray-600); padding-left: 1.4rem; position: relative; line-height: 1.65; }
+  .timeline-points li::before { content: '▸'; position: absolute; left: 0; color: var(--green); font-size: 0.7rem; top: 3px; }
+
+  /* SKILLS SECTION */
+  .skills-section { background: var(--navy-dark); }
+  .skills-section .section-title { color: white; }
+  .skills-section .section-eyebrow { background: rgba(46,125,50,0.25); }
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
+  .skill-cat-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 1.5rem; transition: var(--transition); }
+  .skill-cat-card:hover { background: rgba(255,255,255,0.09); transform: translateY(-4px); border-color: rgba(201,168,76,0.3); }
+  .skill-cat-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+  .skill-cat-title { font-weight: 700; color: white; margin-bottom: 0.75rem; font-size: 0.95rem; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .skill-tag { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); padding: 3px 10px; border-radius: 4px; font-size: 0.75rem; font-family: var(--font-mono); font-weight: 500; border: 1px solid rgba(255,255,255,0.1); }
+  .skill-tag.highlight { background: rgba(201,168,76,0.15); color: var(--gold); border-color: rgba(201,168,76,0.3); }
+
+  /* EDUCATION & CERTS */
+  .edu-section { background: var(--cream); }
+  .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .edu-card { background: white; border-radius: var(--radius); border: 1px solid var(--gray-200); padding: 1.5rem; transition: var(--transition); }
+  .edu-card:hover { box-shadow: var(--shadow-md); border-color: var(--navy); }
+  .edu-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--navy), var(--navy-light)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 1rem; }
+  .edu-degree { font-weight: 700; color: var(--navy); font-size: 1rem; line-height: 1.3; margin-bottom: 0.25rem; }
+  .edu-school { color: var(--green); font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem; }
+  .edu-year { font-family: var(--font-mono); font-size: 0.75rem; color: var(--gray-400); }
+  .cert-list { display: flex; flex-direction: column; gap: 0.625rem; }
+  .cert-item { display: flex; align-items: flex-start; gap: 10px; padding: 0.875rem 1rem; background: white; border-radius: var(--radius-sm); border: 1px solid var(--gray-200); transition: var(--transition); }
+  .cert-item:hover { border-color: var(--green); }
+  .cert-check { color: var(--green); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .cert-text { font-size: 0.85rem; color: var(--gray-600); line-height: 1.4; }
+
+  /* CONTACT */
+  .contact { background: white; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .contact-info { }
+  .contact-info p { color: var(--gray-600); line-height: 1.8; margin-bottom: 2rem; }
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-link { display: flex; align-items: center; gap: 14px; padding: 1rem 1.25rem; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-sm); transition: var(--transition); text-decoration: none; }
+  .contact-link:hover { background: white; border-color: var(--navy); box-shadow: var(--shadow-sm); transform: translateX(4px); }
+  .contact-link-icon { width: 38px; height: 38px; border-radius: 8px; background: var(--navy); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .contact-link-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--gray-400); margin-bottom: 1px; }
+  .contact-link-value { font-size: 0.9rem; color: var(--navy); font-weight: 600; }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-label { font-size: 0.8rem; font-weight: 600; color: var(--navy); letter-spacing: 0.3px; }
+  .form-input { padding: 11px 14px; border: 1.5px solid var(--gray-200); border-radius: 8px; font-family: var(--font-body); font-size: 0.9rem; color: var(--gray-800); background: white; transition: var(--transition); outline: none; resize: none; }
+  .form-input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(27,58,107,0.08); }
+  .form-input::placeholder { color: var(--gray-400); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-success { background: var(--green-pale); border: 1px solid rgba(46,125,50,0.3); border-radius: 8px; padding: 12px 16px; color: var(--green); font-size: 0.875rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .form-error { background: #fef2f2; border: 1px solid rgba(220,38,38,0.3); border-radius: 8px; padding: 12px 16px; color: #dc2626; font-size: 0.875rem; font-weight: 600; }
+
+  /* LOGIN MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(6px); z-index: 2000; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s both; }
+  .modal { background: white; border-radius: 16px; padding: 2.5rem; width: 420px; max-width: calc(100vw - 2rem); box-shadow: 0 25px 60px rgba(0,0,0,0.3); animation: fadeUp 0.3s both; position: relative; }
+  .modal-close { position: absolute; top: 1.25rem; right: 1.25rem; background: var(--gray-100); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--gray-600); transition: var(--transition); }
+  .modal-close:hover { background: var(--gray-200); }
+  .modal-logo { text-align: center; margin-bottom: 1.75rem; }
+  .modal-logo-icon { width: 56px; height: 56px; background: linear-gradient(135deg, var(--navy), var(--navy-light)); border-radius: 14px; margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .modal-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; color: var(--navy); text-align: center; margin-bottom: 0.25rem; }
+  .modal-sub { font-size: 0.85rem; color: var(--gray-400); text-align: center; margin-bottom: 2rem; }
+  .modal-tab-bar { display: flex; background: var(--gray-100); border-radius: 8px; padding: 3px; margin-bottom: 1.5rem; }
+  .modal-tab { flex: 1; padding: 8px; border: none; background: none; cursor: pointer; font-family: var(--font-body); font-size: 0.875rem; font-weight: 600; color: var(--gray-400); border-radius: 6px; transition: var(--transition); }
+  .modal-tab.active { background: white; color: var(--navy); box-shadow: var(--shadow-sm); }
+  .modal-hint { font-size: 0.75rem; color: var(--gray-400); text-align: center; margin-top: 1rem; }
+  .modal-hint span { color: var(--navy); font-weight: 600; cursor: pointer; }
+  .modal-hint span:hover { text-decoration: underline; }
+  .logged-in-bar { background: rgba(46,125,50,0.08); border: 1px solid rgba(46,125,50,0.2); border-radius: 8px; padding: 8px 14px; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--green); font-weight: 600; cursor: pointer; }
+  .logged-in-bar:hover { background: rgba(46,125,50,0.15); }
+
+  /* FOOTER */
+  .footer { background: var(--navy-dark); padding: 2.5rem 2rem; text-align: center; }
+  .footer-text { color: rgba(255,255,255,0.4); font-size: 0.85rem; }
+  .footer-text span { color: var(--gold); }
+
+  /* DOWNLOAD MODAL */
+  .download-modal { background: white; border-radius: 16px; padding: 2rem; width: 400px; max-width: calc(100vw - 2rem); box-shadow: 0 25px 60px rgba(0,0,0,0.3); animation: fadeUp 0.3s both; position: relative; }
+  .download-option { display: flex; align-items: center; gap: 14px; padding: 1rem 1.25rem; border: 1.5px solid var(--gray-200); border-radius: 10px; margin-bottom: 0.75rem; cursor: pointer; transition: var(--transition); text-decoration: none; }
+  .download-option:hover { border-color: var(--navy); background: var(--gray-50); transform: translateX(4px); }
+  .download-option-icon { width: 42px; height: 42px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .download-option-text strong { display: block; font-size: 0.9rem; color: var(--navy); margin-bottom: 1px; }
+  .download-option-text span { font-size: 0.75rem; color: var(--gray-400); }
+
+  @media (max-width: 768px) {
+    .hero-content { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-right { display: none; }
+    .about-grid, .contact-grid, .edu-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .nav-links { gap: 1rem; }
+    .nav-link { font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const DEMO_USERS = [
+  { email: "admin@rodel.dev", password: "Admin@2025", name: "Admin" },
+  { email: "guest@rodel.dev", password: "Guest@123", name: "Guest" },
+];
+
+const PROJECTS = [
+  {
+    icon: "🎓",
+    title: "Grading System",
+    tech: "C# · MySQL",
+    status: "complete",
+    color: "#1B3A6B",
+    points: [
+      "Full-featured academic grading system with automated grade computation, student record management, and report generation.",
+      "Relational MySQL database supporting multi-subject, multi-section data with referential integrity.",
+      "Windows Forms UI enabling instructors to input, modify, and export grading data.",
+    ]
+  },
+  {
+    icon: "📋",
+    title: "Enrollment & Billing System",
+    tech: "C# · MySQL",
+    status: "complete",
+    color: "#2a5298",
+    points: [
+      "End-to-end enrollment and billing platform automating student registration, fee computation, and payment tracking.",
+      "Dynamic billing rules handling tuition structures, discounts, and installment scheduling.",
+      "Comprehensive reporting dashboards for real-time visibility into enrollment and financial data.",
+    ]
+  },
+  {
+    icon: "🏫",
+    title: "School Directory",
+    tech: "PHP · MySQL",
+    status: "complete",
+    color: "#2E7D32",
+    points: [
+      "Web-based school directory with PHP MVC architecture for searchable staff and department records.",
+      "Normalized MySQL database with optimized queries supporting fast lookup across hundreds of records.",
+      "Role-based access control differentiating admin and viewer permissions with secure session handling.",
+    ]
+  },
+  {
+    icon: "👤",
+    title: "Profiler App",
+    tech: "Python Django · MySQL",
+    status: "complete",
+    color: "#5c6bc0",
+    points: [
+      "Django-powered profiler for collecting, storing, and displaying structured profile data via a clean web interface.",
+      "Django ORM with MySQL backend for CRUD operations, search filtering, and data exports.",
+      "RESTful endpoints for external integrations and API-first development practices.",
+    ]
+  },
+  {
+    icon: "☁️",
+    title: "Enrollment & Billing (Google Workspace)",
+    tech: "Google Apps Script · Google Sheets · Google Forms · Drive",
+    status: "ongoing",
+    color: "#C9A84C",
+    points: [
+      "Cloud-based enrollment system leveraging Google Apps Script for automation within Google Workspace.",
+      "Custom scripts processing Form submissions, auto-populating Sheets, and triggering email notifications.",
+      "Automated billing workflows computing tuition fees, applying discounts, and generating billing statements.",
+      "Google Drive integration for organized document storage with structured folder management via script automation.",
+    ]
+  },
+];
+
+const SKILLS = [
+  { icon: "💻", title: "Languages", tags: ["C#", "Python", "PHP", "JavaScript", "Java", "HTML5", "CSS", "jQuery", "ReactJS"], highlights: ["C#", "Python", "ReactJS"] },
+  { icon: "🤖", title: "AI / ML", tags: ["Python ML pipelines", "AI workflow automation", "OpenAI API integration"], highlights: ["AI workflow automation"] },
+  { icon: "🗄️", title: "Databases", tags: ["MySQL", "Schema design", "Stored procedures", "Complex queries", "CRUD", "SQL Server"], highlights: ["MySQL"] },
+  { icon: "🧩", title: "Frameworks", tags: ["Python Django", "C# MVC", "PHP MVC", "RESTful APIs"], highlights: ["Python Django"] },
+  { icon: "📊", title: "Data & BI", tags: ["SQL reporting", "Dashboard support", "Data-driven design", "Operational analytics"], highlights: ["SQL reporting"] },
+  { icon: "⚡", title: "Automation", tags: ["Google Apps Script", "Google Sheets API", "Google Forms", "Drive API", "Workflow scripting"], highlights: ["Google Apps Script"] },
+  { icon: "🔧", title: "Dev Tools", tags: ["Git / GitHub", "BASH scripting", "Python scripting", "CLI tools"], highlights: ["Git / GitHub"] },
+  { icon: "🎯", title: "Soft Skills", tags: ["Technical documentation", "Stakeholder communication", "Process automation", "Training"], highlights: [] },
+];
+
+const EXPERIENCE = [
+  {
+    role: "Competency Trainer / ICT Instructor",
+    company: "Tarlac Center for Learning and Skills Success",
+    date: "Aug 2022 – Aug 2025",
+    points: [
+      "Designed and maintained a 3-year Diploma ICT curriculum covering C#, Java, Python, PHP, ReactJS, and database management.",
+      "Led project-based instruction simulating real-world software development: OOP design, data-driven applications, system integration, and SQL-backed workflows.",
+      "Developed comprehensive technical documentation, assessment tools, and training materials.",
+      "Communicated complex technical concepts across diverse skill levels.",
+    ]
+  },
+  {
+    role: "ICT Instructor",
+    company: "Golden Olympus Colleges Inc.",
+    date: "Jul 2020 – May 2022",
+    points: [
+      "Instructed students in full-stack web development (HTML, CSS, JavaScript, ReactJS) and backend programming (C#, Java, PHP, MySQL).",
+      "Implemented assessment-driven strategies evaluating applied technical skills consistent with TDD principles.",
+      "Designed hands-on exercises covering database design, CRUD operations, and application logic.",
+    ]
+  },
+  {
+    role: "Trainer Assistant",
+    company: "St. Paul College of Arts and Sciences Inc.",
+    date: "Jun 2017 – Jun 2020",
+    points: [
+      "Supported technical training delivery for Computer Systems Servicing programs, managing lab environments and hardware/software troubleshooting.",
+      "Maintained structured learning records and compliance documentation.",
+    ]
+  },
+];
+
+const CERTS = [
+  "National TVET Trainer Certificate – Web Development NC III",
+  "Programming (JAVA) NC III – Saint Mark Technical Vocational Institute Inc. (Dec 2021)",
+  "ReactJS – Complete Guide for Frontend Web Development",
+  "Deploy Scalable React Web Apps on the Cloud",
+  "Unleashing the Power of Azure AI: Microsoft AI Fundamentals Workshop (Sep 2023)",
+  "How to Start in Data Analytics with SQL and Python (Jul 2022)",
+  "Trainers Methodology Level I (Aug 2021)",
+  "Computer Systems Servicing NC II – St. Paul College of Arts and Sciences (Apr 2017)",
+];
+
+function SkillBar({ name, pct }) {
+  const [width, setWidth] = useState(0);
+  const ref = useRef();
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setTimeout(() => setWidth(pct), 100); } }, { threshold: 0.3 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [pct]);
+  return (
+    <div className="skill-item" ref={ref}>
+      <div className="skill-header">
+        <span className="skill-name">{name}</span>
+        <span className="skill-pct">{pct}%</span>
+      </div>
+      <div className="skill-bar-bg">
+        <div className="skill-bar-fill" style={{ width: width + '%' }} />
+      </div>
+    </div>
+  );
+}
+
+function LoginModal({ onClose, onLogin, loggedIn, user, onLogout }) {
+  const [tab, setTab] = useState('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regPass, setRegPass] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  function handleLogin(e) {
+    e.preventDefault();
+    setError('');
+    const found = DEMO_USERS.find(u => u.email === email && u.password === password);
+    if (found) { onLogin(found); onClose(); }
+    else setError('Invalid email or password. Try: guest@rodel.dev / Guest@123');
+  }
+
+  function handleRegister(e) {
+    e.preventDefault();
+    setError('');
+    if (!name || !regEmail || !regPass) { setError('Please fill all fields.'); return; }
+    if (regPass.length < 6) { setError('Password must be at least 6 characters.'); return; }
+    setSuccess('Account created! (Demo mode — use the login tab)');
+    setTimeout(() => { setTab('login'); setSuccess(''); }, 2000);
+  }
+
+  if (loggedIn) return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()} style={{ textAlign: 'center' }}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <div className="modal-logo">
+          <div className="modal-logo-icon" style={{ background: 'linear-gradient(135deg, #2E7D32, #43A047)' }}>✓</div>
+          <div className="modal-title" style={{ marginBottom: 0 }}>Welcome back!</div>
+          <div className="modal-sub">{user?.name} — {user?.email}</div>
+        </div>
+        <p style={{ color: 'var(--gray-600)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>You are currently logged in. You can access all portfolio features.</p>
+        <button onClick={() => { onLogout(); onClose(); }} style={{ width: '100%', padding: '12px', background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: '8px', color: '#dc2626', fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '0.9rem' }}>Sign Out</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <div className="modal-logo">
+          <div className="modal-logo-icon">🔐</div>
+          <div className="modal-title">Portfolio Access</div>
+          <div className="modal-sub">Sign in to unlock all features</div>
+        </div>
+        <div className="modal-tab-bar">
+          <button className={`modal-tab ${tab === 'login' ? 'active' : ''}`} onClick={() => { setTab('login'); setError(''); }}>Sign In</button>
+          <button className={`modal-tab ${tab === 'register' ? 'active' : ''}`} onClick={() => { setTab('register'); setError(''); }}>Register</button>
+        </div>
+        {error && <div className="form-error" style={{ marginBottom: '1rem' }}>⚠ {error}</div>}
+        {success && <div className="form-success" style={{ marginBottom: '1rem' }}>✓ {success}</div>}
+        {tab === 'login' ? (
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+            <div className="form-group">
+              <label className="form-label">Email Address</label>
+              <input className="form-input" type="email" placeholder="guest@rodel.dev" value={email} onChange={e => setEmail(e.target.value)} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input className="form-input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
+            </div>
+            <button type="submit" className="btn-primary" style={{ justifyContent: 'center', marginTop: '0.25rem' }}>Sign In →</button>
+            <div className="modal-hint">Demo credentials: <span onClick={() => { setEmail('guest@rodel.dev'); setPassword('Guest@123'); }}>guest@rodel.dev</span></div>
+          </form>
+        ) : (
+          <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+            <div className="form-group">
+              <label className="form-label">Full Name</label>
+              <input className="form-input" type="text" placeholder="Your Name" value={name} onChange={e => setName(e.target.value)} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Email Address</label>
+              <input className="form-input" type="email" placeholder="you@email.com" value={regEmail} onChange={e => setRegEmail(e.target.value)} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input className="form-input" type="password" placeholder="Min 6 characters" value={regPass} onChange={e => setRegPass(e.target.value)} required />
+            </div>
+            <button type="submit" className="btn-primary" style={{ justifyContent: 'center', marginTop: '0.25rem' }}>Create Account →</button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function DownloadModal({ onClose }) {
+  function downloadCV() {
+    const link = document.createElement('a');
+    link.href = 'Rodel_Ramos_SoftwareAI_Developer.docx';
+    link.download = 'Rodel_Ramos_SoftwareAI_Developer.docx';
+    link.click();
+  }
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="download-modal" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <div style={{ marginBottom: '1.5rem' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 900, color: 'var(--navy)', marginBottom: '0.25rem' }}>Download CV</div>
+          <p style={{ color: 'var(--gray-400)', fontSize: '0.85rem' }}>Choose your preferred format</p>
+        </div>
+        <div className="download-option" onClick={downloadCV}>
+          <div className="download-option-icon" style={{ background: '#dbeafe' }}>📄</div>
+          <div className="download-option-text">
+            <strong>Word Document (.docx)</strong>
+            <span>Editable format — recommended for recruiters</span>
+          </div>
+        </div>
+        <div className="download-option" style={{ opacity: 0.5, cursor: 'not-allowed' }}>
+          <div className="download-option-icon" style={{ background: '#fee2e2' }}>📋</div>
+          <div className="download-option-text">
+            <strong>PDF Format</strong>
+            <span>Coming soon</span>
+          </div>
+        </div>
+        <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginTop: '1rem', textAlign: 'center' }}>Updated April 2025 · Software & AI Developer</p>
+      </div>
+    </div>
+  );
+}
+
+function ContactForm() {
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', subject: '', message: '' });
+  const [status, setStatus] = useState('idle');
+
+  function handleChange(e) { setForm(f => ({ ...f, [e.target.name]: e.target.value })); }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setStatus('sending');
+    await new Promise(r => setTimeout(r, 1500));
+    setStatus('success');
+    setForm({ firstName: '', lastName: '', email: '', subject: '', message: '' });
+    setTimeout(() => setStatus('idle'), 5000);
+  }
+
+  return (
+    <form className="contact-form" onSubmit={handleSubmit}>
+      <div className="form-row">
+        <div className="form-group">
+          <label className="form-label">First Name</label>
+          <input className="form-input" name="firstName" placeholder="John" value={form.firstName} onChange={handleChange} required />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Last Name</label>
+          <input className="form-input" name="lastName" placeholder="Doe" value={form.lastName} onChange={handleChange} required />
+        </div>
+      </div>
+      <div className="form-group">
+        <label className="form-label">Email Address</label>
+        <input className="form-input" name="email" type="email" placeholder="you@company.com" value={form.email} onChange={handleChange} required />
+      </div>
+      <div className="form-group">
+        <label className="form-label">Subject</label>
+        <input className="form-input" name="subject" placeholder="Opportunity at Pearl Talent" value={form.subject} onChange={handleChange} required />
+      </div>
+      <div className="form-group">
+        <label className="form-label">Message</label>
+        <textarea className="form-input" name="message" rows={5} placeholder="Tell me about the role or project..." value={form.message} onChange={handleChange} required />
+      </div>
+      {status === 'success' && (
+        <div className="form-success">✓ Message sent! I'll respond within 24 hours.</div>
+      )}
+      <button type="submit" className="btn-primary" style={{ justifyContent: 'center', marginTop: '0.25rem' }} disabled={status === 'sending'}>
+        {status === 'sending' ? (
+          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ width: 16, height: 16, border: '2px solid rgba(0,0,0,0.2)', borderTopColor: 'var(--navy-dark)', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.7s linear infinite' }} />
+            Sending...
+          </span>
+        ) : 'Send Message →'}
+      </button>
+    </form>
+  );
+}
+
+function App() {
+  const [scrolled, setScrolled] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showDownload, setShowDownload] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const [activeSection, setActiveSection] = useState('home');
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  function scrollTo(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  return (
+    <div>
+      {/* NAV */}
+      <nav className={`nav ${scrolled ? 'scrolled' : ''}`}>
+        <div className="nav-logo" onClick={() => scrollTo('home')}>
+          Rodel<span>.</span>dev
+        </div>
+        <div className="nav-links">
+          {['about','projects','experience','contact'].map(s => (
+            <span key={s} className="nav-link" onClick={() => scrollTo(s)} style={{ textTransform: 'capitalize' }}>{s}</span>
+          ))}
+          <span className="nav-link" onClick={() => setShowDownload(true)} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            ⬇ CV
+          </span>
+          {loggedIn ? (
+            <span className="logged-in-bar" onClick={() => setShowLogin(true)}>
+              ✓ {user?.name}
+            </span>
+          ) : (
+            <span className="nav-link nav-cta" onClick={() => setShowLogin(true)}>Sign In</span>
+          )}
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <section id="home" className="hero">
+        <div className="hero-bg-grid" />
+        <div className="hero-orb-1" />
+        <div className="hero-orb-2" />
+        <div className="hero-content">
+          <div>
+            <div className="hero-tag fade-up">
+              <span className="hero-tag-dot" />
+              Available for Remote Roles
+            </div>
+            <h1 className="hero-name">
+              Rodel I.
+              <span className="hero-name-accent">Ramos</span>
+            </h1>
+            <div className="hero-role fade-up fade-up-2">
+              <strong>Software & AI Developer</strong> · Philippines
+            </div>
+            <p className="hero-desc fade-up fade-up-3">
+              Building custom applications, AI-driven workflows, and data-integrated systems that improve operational efficiency and streamline decision-making.
+            </p>
+            <div className="hero-meta fade-up fade-up-3">
+              <div className="hero-meta-item"><span className="hero-meta-icon">📧</span> ramosrodel31lds@gmail.com</div>
+              <div className="hero-meta-item"><span className="hero-meta-icon">📱</span> +63 970 538 7824</div>
+              <div className="hero-meta-item"><span className="hero-meta-icon">🕘</span> Available 9:00 AM – 5:00 PM CST</div>
+            </div>
+            <div className="hero-actions fade-up fade-up-4">
+              <button className="btn-primary" onClick={() => scrollTo('contact')}>Hire Me →</button>
+              <button className="btn-secondary" onClick={() => setShowDownload(true)}>⬇ Download CV</button>
+            </div>
+          </div>
+          <div className="hero-right">
+            <div className="hero-stat-card" style={{ animationDelay: '0.3s' }}>
+              <div style={{ display: 'flex', gap: '1.5rem' }}>
+                <div><div className="hero-stat-num">8+</div><div className="hero-stat-label">Years Experience</div></div>
+                <div><div className="hero-stat-num">5</div><div className="hero-stat-label">Key Projects</div></div>
+                <div><div className="hero-stat-num">8+</div><div className="hero-stat-label">Certifications</div></div>
+              </div>
+            </div>
+            <div className="hero-stat-card">
+              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', fontFamily: 'var(--font-mono)', marginBottom: '0.75rem', letterSpacing: 1 }}>TECH STACK</div>
+              <div className="hero-skills-bar">
+                {["C#","Python","PHP","MySQL","ReactJS","Django","Google Apps Script","JavaScript","Git"].map(s => (
+                  <span key={s} className="hero-skill-pill">{s}</span>
+                ))}
+              </div>
+            </div>
+            <div className="hero-stat-card" style={{ background: 'rgba(201,168,76,0.1)', borderColor: 'rgba(201,168,76,0.2)' }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: 600, marginBottom: '0.25rem' }}>🎓 Currently</div>
+              <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.875rem' }}>B.S. Software Development — BYU–Idaho (Ongoing)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section id="about" className="about">
+        <div className="section-inner">
+          <div className="section-header">
+            <span className="section-eyebrow">About Me</span>
+            <h2 className="section-title">Turning Ideas into <span>Scalable Systems</span></h2>
+            <div className="section-line" />
+          </div>
+          <div className="about-grid">
+            <div className="about-text">
+              <p>I'm a <strong>Software & AI Developer</strong> based in Tarlac City, Philippines, with a strong foundation in full-stack development, database engineering, and workflow automation. My background spans teaching advanced ICT curricula to building production-ready systems across diverse stacks.</p>
+              <p>I specialize in custom application development using <strong>C#, Python, PHP, and JavaScript</strong>, backed by solid <strong>MySQL database design</strong>. I'm actively exploring AI/ML solutions — from Python-based automation pipelines to Google Workspace scripting — to enhance real-world business processes.</p>
+              <p>With experience designing systems that handle everything from student enrollment and billing to cloud-based automation, I bring both <strong>technical depth and business context</strong> to every project I take on.</p>
+              <div className="about-info-grid">
+                <div className="about-info-item"><div className="about-info-label">Location</div><div className="about-info-value">Tarlac City, PH</div></div>
+                <div className="about-info-item"><div className="about-info-label">Availability</div><div className="about-info-value">Fully Remote</div></div>
+                <div className="about-info-item"><div className="about-info-label">Schedule</div><div className="about-info-value">9AM–5PM CST</div></div>
+                <div className="about-info-item"><div className="about-info-label">Status</div><div className="about-info-value" style={{ color: 'var(--green)' }}>Open to Work</div></div>
+              </div>
+            </div>
+            <div className="skills-container">
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--navy)', fontSize: '1rem', marginBottom: '1rem' }}>Core Proficiencies</div>
+              <SkillBar name="C# / .NET Development" pct={88} />
+              <SkillBar name="MySQL / Database Design" pct={85} />
+              <SkillBar name="Python / Django" pct={80} />
+              <SkillBar name="PHP / Web Development" pct={78} />
+              <SkillBar name="JavaScript / ReactJS" pct={75} />
+              <SkillBar name="Google Apps Script" pct={72} />
+              <SkillBar name="AI / ML Integration" pct={65} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PROJECTS */}
+      <section id="projects" className="projects">
+        <div className="section-inner">
+          <div className="section-header">
+            <span className="section-eyebrow">Portfolio</span>
+            <h2 className="section-title">Key <span>Projects</span></h2>
+            <div className="section-line" />
+          </div>
+          <div className="projects-grid">
+            {PROJECTS.map((p, i) => (
+              <div key={i} className="project-card">
+                <div className="project-card-header">
+                  <div className="project-icon" style={{ background: p.color + '18' }}>{p.icon}</div>
+                  <span className={`project-badge ${p.status === 'ongoing' ? 'badge-ongoing' : 'badge-complete'}`}>
+                    {p.status === 'ongoing' ? '● In Progress' : '✓ Completed'}
+                  </span>
+                </div>
+                <div className="project-body">
+                  <div className="project-title">{p.title}</div>
+                  <div className="project-tech">{p.tech}</div>
+                  <ul className="project-points">
+                    {p.points.map((pt, j) => <li key={j}>{pt}</li>)}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SKILLS */}
+      <section className="skills-section">
+        <div className="section-inner">
+          <div className="section-header">
+            <span className="section-eyebrow" style={{ background: 'rgba(46,125,50,0.25)' }}>Technical Arsenal</span>
+            <h2 className="section-title" style={{ color: 'white' }}>Skills & <span style={{ color: 'var(--gold)' }}>Expertise</span></h2>
+            <div className="section-line" />
+          </div>
+          <div className="skills-grid">
+            {SKILLS.map((s, i) => (
+              <div key={i} className="skill-cat-card">
+                <div className="skill-cat-icon">{s.icon}</div>
+                <div className="skill-cat-title">{s.title}</div>
+                <div className="skill-tags">
+                  {s.tags.map((t, j) => (
+                    <span key={j} className={`skill-tag ${s.highlights.includes(t) ? 'highlight' : ''}`}>{t}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* EXPERIENCE */}
+      <section id="experience" className="experience">
+        <div className="section-inner">
+          <div className="section-header">
+            <span className="section-eyebrow">Career</span>
+            <h2 className="section-title">Professional <span>Experience</span></h2>
+            <div className="section-line" />
+          </div>
+          <div className="timeline">
+            {EXPERIENCE.map((e, i) => (
+              <div key={i} className="timeline-item">
+                <div className="timeline-dot" />
+                <div className="timeline-header">
+                  <div>
+                    <div className="timeline-role">{e.role}</div>
+                    <div className="timeline-company">{e.company}</div>
+                  </div>
+                  <span className="timeline-date">{e.date}</span>
+                </div>
+                <ul className="timeline-points">
+                  {e.points.map((p, j) => <li key={j}>{p}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* EDUCATION */}
+      <section className="edu-section">
+        <div className="section-inner">
+          <div className="section-header">
+            <span className="section-eyebrow">Background</span>
+            <h2 className="section-title">Education & <span>Certifications</span></h2>
+            <div className="section-line" />
+          </div>
+          <div className="edu-grid">
+            <div>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--navy)', marginBottom: '1.25rem', fontSize: '1rem' }}>Academic Background</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="edu-card">
+                  <div className="edu-icon">🎓</div>
+                  <div className="edu-degree">B.S. in Software Development</div>
+                  <div className="edu-school">Brigham Young University – Idaho (BYU-Pathway Worldwide)</div>
+                  <div className="edu-year">Apr 2023 – Present</div>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--gray-400)', marginTop: '0.5rem' }}>Ongoing coursework in software engineering, data structures, algorithms, and enterprise application development.</p>
+                </div>
+                <div className="edu-card">
+                  <div className="edu-icon">🏛️</div>
+                  <div className="edu-degree">Associate in Computer Technology</div>
+                  <div className="edu-school">STI College Tarlac</div>
+                  <div className="edu-year">Graduated May 2015</div>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--gray-400)', marginTop: '0.5rem' }}>Core studies in programming fundamentals (Java, C#), database design, and computer systems analysis.</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--navy)', marginBottom: '1.25rem', fontSize: '1rem' }}>Certifications</div>
+              <div className="cert-list">
+                {CERTS.map((c, i) => (
+                  <div key={i} className="cert-item">
+                    <span className="cert-check">✓</span>
+                    <span className="cert-text">{c}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT */}
+      <section id="contact" className="contact">
+        <div className="section-inner">
+          <div className="section-header">
+            <span className="section-eyebrow">Get In Touch</span>
+            <h2 className="section-title">Let's <span>Connect</span></h2>
+            <div className="section-line" />
+          </div>
+          <div className="contact-grid">
+            <div className="contact-info">
+              <p>I'm actively seeking a <strong style={{ color: 'var(--navy)' }}>Software & AI Developer</strong> role (fully remote, CST timezone). Whether you're hiring, collaborating, or just want to talk tech — I'd love to hear from you.</p>
+              <div className="contact-links">
+                <a className="contact-link" href="mailto:ramosrodel31lds@gmail.com">
+                  <div className="contact-link-icon">✉</div>
+                  <div><div className="contact-link-label">Email</div><div className="contact-link-value">ramosrodel31lds@gmail.com</div></div>
+                </a>
+                <a className="contact-link" href="tel:+639705387824">
+                  <div className="contact-link-icon">📱</div>
+                  <div><div className="contact-link-label">Phone / WhatsApp</div><div className="contact-link-value">+63 970 538 7824</div></div>
+                </a>
+                <div className="contact-link" style={{ cursor: 'default' }}>
+                  <div className="contact-link-icon" style={{ background: 'var(--green)' }}>📍</div>
+                  <div><div className="contact-link-label">Location</div><div className="contact-link-value">Tarlac City, Philippines</div></div>
+                </div>
+                <div className="contact-link" onClick={() => setShowDownload(true)} style={{ cursor: 'pointer' }}>
+                  <div className="contact-link-icon" style={{ background: 'var(--gold)', color: 'var(--navy-dark)' }}>📄</div>
+                  <div><div className="contact-link-label">Resume / CV</div><div className="contact-link-value">Download Latest CV →</div></div>
+                </div>
+              </div>
+            </div>
+            <ContactForm />
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="footer">
+        <div className="footer-text">
+          © 2025 <span>Rodel I. Ramos</span> · Software & AI Developer · Tarlac City, Philippines<br />
+          <span style={{ fontSize: '0.75rem', opacity: 0.6, marginTop: '0.5rem', display: 'block' }}>Built with React · Available for Pearl Talent & Global Remote Roles</span>
+        </div>
+      </footer>
+
+      {/* MODALS */}
+      {showLogin && <LoginModal onClose={() => setShowLogin(false)} onLogin={(u) => { setLoggedIn(true); setUser(u); }} loggedIn={loggedIn} user={user} onLogout={() => { setLoggedIn(false); setUser(null); }} />}
+      {showDownload && <DownloadModal onClose={() => setShowDownload(false)} />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
